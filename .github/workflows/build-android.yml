@@ -18,13 +18,10 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Cache Buildozer
-        uses: actions/cache@v4
-        with:
-          path: |
-            ~/.buildozer
-            .buildozer
-          key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
+      - name: Clean previous builds (force)
+        run: |
+          rm -rf .buildozer
+          rm -rf ~/.buildozer
 
       - name: Install system dependencies
         run: |
@@ -35,6 +32,10 @@ jobs:
         run: |
           pip3 install --upgrade Cython==3.0.10 setuptools wheel
           pip3 install --upgrade buildozer==1.5.0
+
+      - name: Initial Buildozer setup
+        run: |
+          buildozer init  # garante que buildozer.spec existe
 
       - name: Build APK
         run: |
