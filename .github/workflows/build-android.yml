@@ -32,8 +32,17 @@ jobs:
           pip3 install --upgrade Cython==3.0.10 setuptools wheel
           pip3 install --upgrade buildozer==1.5.0
 
-      - name: Build APK (one command)
+      - name: Accept Android SDK licenses
+        uses: android-actions/setup-android@v3
+        env:
+          ANDROID_SDK_ROOT: ${{ runner.temp }}/android-sdk
+        with:
+          sdk-version: "34"
+
+      - name: Build APK
         run: |
+          export ANDROID_SDK_ROOT=${{ runner.temp }}/android-sdk
+          yes | sdkmanager --licenses
           buildozer android debug
 
       - name: Upload APK
