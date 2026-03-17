@@ -7,7 +7,7 @@ on:
 
 jobs:
   build:
-    runs-on: ubuntu-22.04  # Ubuntu 22.04 tem libtinfo5
+    runs-on: ubuntu-22.04
 
     steps:
       - name: Checkout
@@ -26,9 +26,19 @@ jobs:
             .buildozer
           key: ${{ runner.os }}-buildozer-${{ hashFiles('buildozer.spec') }}
 
-      - name: Build APK with Buildozer
+      - name: Install system dependencies
         run: |
-          pip install --user --upgrade buildozer
+          sudo apt update
+          sudo apt install -y git zip unzip openjdk-17-jdk python3-pip autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+
+      - name: Install Python dependencies
+        run: |
+          pip3 install --upgrade Cython==3.0.10 setuptools wheel
+          pip3 install --upgrade buildozer==1.5.0
+
+      - name: Build APK
+        run: |
+          buildozer android clean
           buildozer -v android debug
 
       - name: Upload APK
