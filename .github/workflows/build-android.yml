@@ -1,10 +1,32 @@
-name: Build Android APK
+name: Build APK
 
 on:
   push:
-    branches: [ main ]
+    branches: [ "main" ]
+  pull_request:
+    branches: [ "main" ]
   workflow_dispatch:
 
 jobs:
   build:
-    runs-on
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        arch: [arm64-v8a]
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: set up python
+      id: setup-python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.11'
+
+    - name: Install dependencies
+      run: |
+        sudo apt update
+        sudo apt install -y git zip unzip openjdk-8-jdk python3-pip autoconf libtool pkg-config libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+
+    - name: Buildozer cache
+      uses
