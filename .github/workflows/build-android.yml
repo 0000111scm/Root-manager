@@ -33,9 +33,11 @@ jobs:
           pip3 install --upgrade Cython==3.0.10 setuptools wheel
           pip3 install --upgrade buildozer==1.5.0
 
-      - name: Initial Buildozer setup
+      - name: Setup buildozer.spec (if needed)
         run: |
-          buildozer init  # garante que buildozer.spec existe
+          if [ ! -f buildozer.spec ]; then
+            buildozer init
+          fi
 
       - name: Build APK
         run: |
