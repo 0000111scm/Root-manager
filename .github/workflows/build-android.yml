@@ -13,12 +13,11 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup JDK 17
+      - name: Setup JDK 17 (sem cache Gradle)
         uses: actions/setup-java@v4
         with:
           distribution: 'temurin'
           java-version: '17'
-          cache: 'gradle'
 
       - name: Setup Python
         uses: actions/setup-python@v5
@@ -44,9 +43,12 @@ jobs:
         with:
           cmdline-tools-version: '16.0'
 
+      - name: Accept licenses manually
+        run: |
+          yes | sdkmanager --licenses
+
       - name: Build APK
         run: |
-          yes | $ANDROID_SDK_ROOT/cmdline-tools/latest/bin/sdkmanager --licenses
           buildozer android debug
 
       - name: Upload APK
